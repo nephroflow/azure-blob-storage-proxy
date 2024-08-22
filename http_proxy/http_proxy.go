@@ -71,6 +71,7 @@ func (proxy StorageProxy) downloadBlob(w http.ResponseWriter, name string) {
 	streamResponse, err := proxy.client.DownloadStream(context.Background(), proxy.containerName, proxy.objectName(name), &azblob.DownloadStreamOptions{})
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
+		log.Printf("Error fetching blob: %v", err)
 		return
 	}
 
@@ -84,8 +85,8 @@ func (proxy StorageProxy) downloadBlob(w http.ResponseWriter, name string) {
 func (proxy StorageProxy) checkBlobExists(w http.ResponseWriter, name string) {
 	blobClient := proxy.client.ServiceClient().NewContainerClient(proxy.containerName).NewBlobClient(proxy.objectName(name))
 	_, err := blobClient.GetProperties(context.Background(), &blob.GetPropertiesOptions{})
-
 	if err != nil {
+		log.Printf("Error checking blob: %v", err)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}

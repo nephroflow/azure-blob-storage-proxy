@@ -1,7 +1,7 @@
-FROM golang:latest as builder
+FROM golang:1.23-alpine as builder
 
 WORKDIR /build
-ADD . /build
+COPY . /build
 
 RUN CGO_ENABLED=0 go build -o azure-blob-storage-proxy ./cmd/
 
